@@ -1,0 +1,16 @@
+.Teste {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
+.Teste input {
+  max-width: 200px;
+  margin-top: 10px;
+}
+
+.ViewerMap {
+  overflow: hidden;
+  position: relative;
+}
