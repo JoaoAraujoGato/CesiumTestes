@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { Cartesian3, createWorldTerrain, Ion, IonResource } from "cesium";
 import { Viewer, Entity, Cesium3DTileset, CameraFlyTo } from "resium";
 import "./App.css";
-import PrevisaoFunction from "./FuncoesHtml/PrevisaoObra";
-import DivisaoFunction from "./FuncoesHtml/DivisaoEstrutura";
-import AmostrasFunction from "./FuncoesHtml/ControleCorteAmostras";
-import SondagensFunction from "./FuncoesHtml/Sondagens";
-import HeatmapFunction from "./FuncoesHtml/Heatmap";
-import StatusFunction from "./FuncoesHtml/Status";
+import PrevisaoFunction from "./Funcionalidades/PrevisaoObra";
+import DivisaoFunction from "./Funcionalidades/DivisaoEstrutura";
+import AmostrasFunction from "./Funcionalidades/ControleCorteAmostras";
+import SondagensFunction from "./Funcionalidades/Sondagens";
+import HeatmapFunction from "./Funcionalidades/Heatmap";
+import StatusFunction from "./Funcionalidades/Status";
 
 // O Token a gente coloca no .ENV depois.
 Ion.defaultAccessToken =
@@ -47,6 +47,13 @@ export default function App() {
       >
         <CameraFlyTo destination={posicaoCamera} duration={5}/> 
         <Cesium3DTileset url={IonResource.fromAssetId(751563)} />
+        {funcaoEscolhida == "previsaoObra" && ( <PrevisaoFunction/> )}
+        {funcaoEscolhida == "previsaoObra" && ( <PrevisaoFunction/> )}
+        {funcaoEscolhida == "divisaoEstrutura" && ( <DivisaoFunction/> )}
+        {funcaoEscolhida == "controleCorteAmostras" && ( <AmostrasFunction/> )}
+        {funcaoEscolhida == "Sondagens" && ( <SondagensFunction/> )}          
+        {funcaoEscolhida == "Heatmap" && ( <HeatmapFunction/> )}
+        {funcaoEscolhida == "Status" && ( <StatusFunction/> )}
       </Viewer>
       <div className="CssInputs">
         <div className="baseInputs">
@@ -63,14 +70,19 @@ export default function App() {
             <option onClick={(e)=>{e.preventDefault(); setFuncaoEscolhida(e.target.value)}} value="Heatmap">Heatmap</option>
             <option onClick={(e)=>{e.preventDefault(); setFuncaoEscolhida(e.target.value)}} value="Status">Status</option>
           </select>
-          {funcaoEscolhida == "previsaoObra" && ( <PrevisaoFunction/> )}
-          {funcaoEscolhida == "divisaoEstrutura" && ( <DivisaoFunction/> )}
-          {funcaoEscolhida == "controleCorteAmostras" && ( <AmostrasFunction/> )}
-          {funcaoEscolhida == "Sondagens" && ( <SondagensFunction/> )}          
-          {funcaoEscolhida == "Heatmap" && ( <HeatmapFunction/> )}
-          {funcaoEscolhida == "Status" && ( <StatusFunction/> )}
         </div>
       </div>
     </div>
   );
 }
+
+
+// Aqui temos o codigo que vai ler 
+// var uploadControl = document.getElementById("dataToUpload");
+// uploadControl.addEventListener("submit", function (e) {
+//     e.preventDefault();
+//     const [file] = document.getElementById("fileHandle").files;
+//     readFileAsText(file, "windows-1252")
+//         .then((txt) => window.Papa.parse(txt, { header: true }))
+//         .then((json) => dataUpload.raiseEvent(json.data))
+//         .catch((err) => console.error(err));
