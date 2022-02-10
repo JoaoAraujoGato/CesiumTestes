@@ -45,9 +45,8 @@ export default function App() {
         full
         terrainProvider={terrainProvider}
       >
-        <CameraFlyTo destination={posicaoCamera} duration={5}/> 
+        <CameraFlyTo destination={posicaoCamera} duration={1}/> 
         <Cesium3DTileset url={IonResource.fromAssetId(751563)} />
-        {funcaoEscolhida == "previsaoObra" && ( <PrevisaoFunction/> )}
         {funcaoEscolhida == "previsaoObra" && ( <PrevisaoFunction/> )}
         {funcaoEscolhida == "divisaoEstrutura" && ( <DivisaoFunction/> )}
         {funcaoEscolhida == "controleCorteAmostras" && ( <AmostrasFunction/> )}
