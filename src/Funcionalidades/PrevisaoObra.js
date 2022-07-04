@@ -1,5 +1,5 @@
 import React from "react";
-import { BoxGraphics, Entity, Viewer } from "resium";
+import { BoxGraphics, Entity, Viewer, EntityDescription } from "resium";
 import { Color, Cartesian3, Transforms, HeadingPitchRoll, Math } from "cesium";
 
 export default function PrevisaoObra() {
@@ -69,15 +69,35 @@ export default function PrevisaoObra() {
         },
     ]
 
+    console.log(entidades[0].dimensions, "TESTE")
+    var obj={
+        nome: 'João Araujo',
+        idade: 23,
+        email: 'joao.araujo@gmail.com',
+        cargo: 'estagiário',
+        observacao: 'teste aqui esta dando certo'
+    }
+
     // Outra forma que nao consegui fazer funcionar
     const entities = Object.values(entidades).map((e, index) => {
+        // console.log(e.orientation)
         return (
             <Entity 
                 name={e.name}
-                description={e.description}
                 position={Cartesian3.fromDegrees(E, N, height+(index)*5)}
                 orientation={e.orientation}
             >
+                <EntityDescription>
+                    <table style={{border:"1px solid"}}>
+                        <caption>Maciço Terroso X</caption>
+                        {Object.entries(obj).map((entrada)=>(
+                            <tr>
+                                <th>{entrada[0]}</th>
+                                <td>{entrada[1]}</td>
+                            </tr>
+                        ))}
+                    </table>
+            </EntityDescription>
                 <BoxGraphics show={true} fill={true} outline={true} outlineColor={Color.WHITE} material={Color.fromAlpha(Color.WHITE, 0.1)} dimensions={e.dimensions}/>
             </Entity>
         );

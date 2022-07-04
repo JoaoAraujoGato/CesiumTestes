@@ -1,6 +1,11 @@
 import React from "react";
+import Conversor from "../Funcoes/ConversorUTMLatLong";
 
 export default function DivisaoEstrutura() {
+
+    const conversorCoordenadas = new Conversor();
+    var aux = conversorCoordenadas.convertUtmToLatLng(300051.26959241304, 7822726.746865569, 23, "S")
+    console.log(aux)
 
     return (
         <>

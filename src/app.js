@@ -1,20 +1,12 @@
 import React, { useState } from "react";
-import { Cartesian3, createWorldTerrain, Ion, IonResource } from "cesium";
-import { Viewer, Entity, Cesium3DTileset, CameraFlyTo } from "resium";
+import { Cartesian3,Color, createWorldTerrain, Ion, IonResource } from "cesium";
+import { Viewer, Entity, Cesium3DTileset, CameraFlyTo, PolygonGraphics, CorridorGraphics } from "resium";
 import "./App.css";
-import PrevisaoFunction from "./Funcionalidades/PrevisaoObra";
-import DivisaoFunction from "./Funcionalidades/DivisaoEstrutura";
-import AmostrasFunction from "./Funcionalidades/ControleCorteAmostras";
-import SondagensFunction from "./Funcionalidades/Sondagens";
-import HeatmapFunction from "./Funcionalidades/Heatmap";
-import StatusFunction from "./Funcionalidades/Status";
-
 // O Token a gente coloca no .ENV depois.
-Ion.defaultAccessToken =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjYmFiNmE5Yi1hYmMxLTQ4MTYtOTFmYy0zOGVhNzg1MDgzODgiLCJpZCI6Nzc4MTcsImlhdCI6MTY0MTk5ODQ1NH0.aqwcpB-mIgcH5dRPxFYWsAOgNsZVW9mNxPMpFcf23Sk";
   
 export default function App() {
   //Criação de terreno 3D
+  Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjYmFiNmE5Yi1hYmMxLTQ4MTYtOTFmYy0zOGVhNzg1MDgzODgiLCJpZCI6Nzc4MTcsImlhdCI6MTY0MTk5ODQ1NH0.aqwcpB-mIgcH5dRPxFYWsAOgNsZVW9mNxPMpFcf23Sk"
   const terrainProvider = createWorldTerrain();
 
   const Brasil = {
@@ -26,18 +18,131 @@ export default function App() {
     name: "Barragem 8"
   };
   const CapimBranco = {
-    position: Cartesian3.fromDegrees(-44.073327, -20.108577, 2000.0), 
+    position: Cartesian3.fromDegrees(-44.073327, -20.108577, 3000.0), 
     name: "Capim Branco"
   };
 
-  const [posicaoCamera, setPosicaoCamera] = useState(Brasil.position);
-  const [selectDeFuncoes, setSelectDeFuncoes] = useState("none"); // Controla se exibe ou nao as funções (none-> nao exibe; block -> exibe)
-  const [funcaoEscolhida, setFuncaoEscolhida] = useState("");
+  const [posicaoCamera, setPosicaoCamera] = useState(Barragem8.position);
 
   function handleClick(destination) {
     setPosicaoCamera(destination);
   }
-
+  const blocos = [
+    {
+      coordenadaBase: [
+        {
+          E:-46.906927257432614,
+          N:-19.677826576338152,
+          Z: 1075,
+        },
+        {
+          E:-46.90965484970198,
+          N:-19.68346872149166,
+          Z: 1075,
+        },
+        {
+          E:-46.90786556920421,
+          N:-19.683998888295155,
+          Z: 1075,
+        },
+        {
+          E:-46.90576556920421,
+          N:-19.681398888295155,
+          Z: 1075,
+        },
+        {
+          E:-46.90586556920421,
+          N:-19.680098888295155,
+          Z: 1075,
+        },
+        {
+          E:-46.905255170191015,
+          N:-19.678479926142008,
+          Z: 1075,
+        },
+      ],
+      coordenadaTopo: [
+        {
+          E:-46.90682707947468,
+          N:-19.678285535135557,
+          Z: 1105,
+        },
+        {
+          E:-46.909338063250594,
+          N:-19.683165375313023,
+          Z: 1105,
+        },
+        {
+          E:-46.908105037715995,
+          N:-19.683508392597954,
+          Z: 1105,
+        },
+        {
+          E:-46.906005037715995,
+          N:-19.681308392597954,
+          Z: 1105,
+        },
+        {
+          E:-46.906105037715995,
+          N:-19.680008392597954,
+          Z: 1105,
+        },
+        {
+          E:-46.90574535824787,
+          N:-19.67868701355677,
+          Z: 1105,
+        },
+      ]
+    },
+    {
+      coordenadaBase: [
+        {
+          E:-46.90682707947468,
+          N:-19.678285535135557,
+          Z: 1108,
+        },
+        {
+          E:-46.90930107447468,
+          N:-19.68306872149166,
+          Z: 1108,
+        },
+        {
+          E:-46.90845156920421,
+          N:-19.683358888295155,
+          Z: 1108,
+        },
+        {
+          E:-46.906235170191015,
+          N:-19.678529926142008,
+          Z: 1108,
+        },
+      ],
+      coordenadaTopo:  [
+        {
+          E:-46.90683707947468,
+          N:-19.678885535135557,
+          Z: 1120,
+        },
+        {
+          E:-46.90891156920421,
+          N:-19.68276872149166,
+          Z: 1120,
+        },
+        {
+          E:-46.90871156920421,
+          N:-19.68276872149166,
+          Z: 1120,
+        },
+        {
+          E:-46.90673707947468,
+          N:-19.678925535135557,
+          Z: 1120,
+        },
+      ]
+    }
+  ];
+  // Uma obra pode possuir varios blocos
+  // um bloco possui camada.coordenadas.length entidades laterais + entidade Topo
     return (
     <div className="baseMap3D">
       <Viewer
@@ -45,43 +150,81 @@ export default function App() {
         full
         terrainProvider={terrainProvider}
       >
-        <CameraFlyTo destination={posicaoCamera} duration={1}/> 
+        {criarBlocos(blocos)}
+        <CameraFlyTo destination={posicaoCamera} duration={3}/>
         <Cesium3DTileset url={IonResource.fromAssetId(751563)} />
-        {funcaoEscolhida == "previsaoObra" && ( <PrevisaoFunction/> )}
-        {funcaoEscolhida == "divisaoEstrutura" && ( <DivisaoFunction/> )}
-        {funcaoEscolhida == "controleCorteAmostras" && ( <AmostrasFunction/> )}
-        {funcaoEscolhida == "Sondagens" && ( <SondagensFunction/> )}          
-        {funcaoEscolhida == "Heatmap" && ( <HeatmapFunction/> )}
-        {funcaoEscolhida == "Status" && ( <StatusFunction/> )}
       </Viewer>
-      <div className="CssInputs">
-        <div className="baseInputs">
-          <select className="SelectObra">
-            <option onClick={()=> { handleClick(Brasil.position), setSelectDeFuncoes("none"), setFuncaoEscolhida("") }}>Selecione uma Obra</option>
-            <option onClick={()=> { handleClick(Barragem8.position), setSelectDeFuncoes("block"), setFuncaoEscolhida("previsaoObra") }}>Barragem 8</option>
-            <option onClick={()=> { handleClick(CapimBranco.position), setSelectDeFuncoes("none"), setFuncaoEscolhida("") }}>Capim Branco</option>
-          </select>
-          <select className="SelctFuncoes" style={{display: selectDeFuncoes}}>
-            <option onClick={(e)=>{e.preventDefault(); setFuncaoEscolhida(e.target.value)}} value="previsaoObra">Previsão de Obra</option>
-            <option onClick={(e)=>{e.preventDefault(); setFuncaoEscolhida(e.target.value)}} value="divisaoEstrutura">Divisão da Estrutra - Área e Subáreas </option>
-            <option onClick={(e)=>{e.preventDefault(); setFuncaoEscolhida(e.target.value)}} value="controleCorteAmostras">Amostras</option>
-            <option onClick={(e)=>{e.preventDefault(); setFuncaoEscolhida(e.target.value)}} value="Sondagens">Sondagens</option>
-            <option onClick={(e)=>{e.preventDefault(); setFuncaoEscolhida(e.target.value)}} value="Heatmap">Heatmap</option>
-            <option onClick={(e)=>{e.preventDefault(); setFuncaoEscolhida(e.target.value)}} value="Status">Status</option>
-          </select>
-        </div>
-      </div>
     </div>
   );
 }
 
+function getCoordenadasArray(coordenada){
+  const arrayCoordenada = [];
+  coordenada.forEach((coordenada)=>{
+    arrayCoordenada.push(coordenada.E, coordenada.N, coordenada.Z);
+  })
+  return arrayCoordenada;
+}
 
-// Aqui temos o codigo que vai ler 
-// var uploadControl = document.getElementById("dataToUpload");
-// uploadControl.addEventListener("submit", function (e) {
-//     e.preventDefault();
-//     const [file] = document.getElementById("fileHandle").files;
-//     readFileAsText(file, "windows-1252")
-//         .then((txt) => window.Papa.parse(txt, { header: true }))
-//         .then((json) => dataUpload.raiseEvent(json.data))
-//         .catch((err) => console.error(err));
+function getInfosBlocos(blocos){
+  return blocos.map((bloco)=>{
+    const { coordenadaBase, coordenadaTopo } = bloco;
+    if(coordenadaBase.length !== coordenadaTopo.length) 
+      return null;
+    let contador = 0;
+    console.log(getCoordenadasArray(coordenadaTopo))
+    const entidades = [{
+      hierarchy: Cartesian3.fromDegreesArrayHeights(getCoordenadasArray(coordenadaTopo)),
+      height: coordenadaTopo[0].height,
+      extrudedHeight: coordenadaTopo[0].height,
+      material: Color.BURLYWOOD,
+    }];
+    let hierarchy;
+    do{
+      if(contador !== coordenadaTopo.length-1){
+        hierarchy= Cartesian3.fromDegreesArrayHeights([
+          coordenadaBase[contador].E, coordenadaBase[contador].N, coordenadaBase[contador].Z,
+          coordenadaBase[contador+1].E, coordenadaBase[contador+1].N, coordenadaBase[contador+1].Z,
+          coordenadaTopo[contador+1].E, coordenadaTopo[contador+1].N, coordenadaTopo[contador+1].Z,
+          coordenadaTopo[contador].E, coordenadaTopo[contador].N, coordenadaTopo[contador].Z,
+        ])
+      }else{
+        hierarchy= Cartesian3.fromDegreesArrayHeights([
+          coordenadaBase[contador].E, coordenadaBase[contador].N, coordenadaBase[contador].Z,
+          coordenadaBase[0].E, coordenadaBase[0].N, coordenadaBase[0].Z,
+          coordenadaTopo[0].E, coordenadaTopo[0].N, coordenadaTopo[0].Z,
+          coordenadaTopo[contador].E, coordenadaTopo[contador].N, coordenadaTopo[contador].Z,
+        ])
+      }
+      entidades.push({
+        hierarchy: hierarchy,
+        height: coordenadaBase[0].Z,
+        extrudedHeight: coordenadaBase[0].Z,
+        material: Color.BURLYWOOD,
+      })
+      contador=contador+1;
+    } while (contador < coordenadaTopo.length);
+    return entidades
+  })
+}
+
+function criarBlocos(blocos){
+  return getInfosBlocos(blocos).map((bloco) => {
+    console.log("bloco", bloco)
+    return bloco.map((entidade) => (
+      <>
+        <Entity name="Teste">
+          <PolygonGraphics
+            hierarchy={entidade.hierarchy}
+            height={entidade.height}
+            extrudedHeight={entidade.extrudedHeight}
+            perPositionHeight
+            material={entidade.material}
+            outlineColor={Color.BLACK}
+            outline
+            />
+        </Entity>
+      </>
+    ))
+  })
+}

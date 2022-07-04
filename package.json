@@ -26,6 +26,7 @@
     "cesium": "1.86.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "resium": "1.14.3"
+    "resium": "1.14.3",
+    "utm-latlng": "^1.0.6"
   }
 }
